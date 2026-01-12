@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>RAWG Games - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="authSection" class="container">
+        <div id="loginForm" class="auth-card">
+            <h2>Iniciar Sesión</h2>
+            <input type="text" id="loginUser" placeholder="Usuario">
+            <input type="password" id="loginPass" placeholder="Contraseña">
+            <button id="loginBtn">Entrar</button>
+            <p>¿No tienes cuenta? <a href="#" id="showRegister">Regístrate</a></p>
+        </div>
+
+        <div id="registerForm" class="auth-card" style="display: none;">
+            <h2>Registro</h2>
+            <input type="text" id="regUser" placeholder="Nuevo Usuario">
+            <input type="password" id="regPass" placeholder="Contraseña">
+            <select id="regRole">
+                <option value="ROLE_USER">Usuario</option>
+                <option value="ROLE_ADMIN">Administrador</option>
+            </select>
+            <button id="regBtn">Crear Cuenta</button>
+            <p>¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión</a></p>
+        </div>
+    </div>
+
+    <div id="gameSection" style="display: none;">
+        <nav>
+            <button id="favsBtn">Mis Favoritos</button>
+            <button id="logoutBtn">Cerrar Sesión</button>
+        </nav>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Busca un juego...">
+            <button id="searchBtn">Buscar</button>
+        </div>
+        <div id="mainContainer" class="grid"></div>
+    </div>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>
