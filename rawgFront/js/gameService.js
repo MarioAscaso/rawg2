@@ -1,62 +1,38 @@
-const API_URL = "http://localhost:8084/api";
-let authHeader = ''; // Aquí guardaremos el token Basic Auth
+// js/services/gameService.js
+import { BaseService } from './baseService.js';
 
-export const gameService = {
-    // Guarda las credenciales en memoria
-    setCredentials(username, password) {
-        authHeader = 'Basic ' + btoa(username + ":" + password);
-    },
+class GameService extends BaseService {
+    constructor() {
+        super("http://localhost:8084/api");
+    }
 
-    clearCredentials() {
-        authHeader = '';
-    },
-
-    async register(username, password, role) {
-        const response = await fetch(`${API_URL}/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password, role })
-        });
-        return response.ok;
-    },
+    // Registro y Login
+    async register(user) {
+        return this.post('/register', user);
+    }
 
     async login() {
-        const response = await fetch(`${API_URL}/login`, {
-            method: 'GET',
-            headers: { 'Authorization': authHeader }
-        });
-        return response.ok;
-    },
+        return this.get('/login');
+    }
 
+    // Lógica de Negocio
     async search(query) {
-        const response = await fetch(`${API_URL}/games?search=${query}`, {
-            headers: { 'Authorization': authHeader }
-        });
-        const data = await response.json();
-        return data.results;
-    },
+        const data = await this.get(`/games?search=${query}`);
+        return data.results; // Ajustado a la estructura de RAWG
+    }
 
-    async fetchFavorites() {
-        const response = await fetch(`${API_URL}/favorites`, {
-            headers: { 'Authorization': authHeader }
-        });
-        return await response.json();
-    },
+    async getFavorites() {
+        return this.get('/favorites');
+    }
 
-    async save(game) {
+    async saveFavorite(game) {
         const gameData = {
             name: game.name,
-            backgroundImage: game.background_image,
+            backgroundImage: game.background_image || game.backgroundImage,
             rating: game.rating
         };
-        const response = await fetch(`${API_URL}/favorites`, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': authHeader 
-            },
-            body: JSON.stringify(gameData)
-        });
-        return response.ok;
+        return this.post('/favorites', gameData);
     }
-};
+}
+
+export const gameService = new GameService();
