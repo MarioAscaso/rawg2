@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "favorites")
+@Table(name = "games")
 @Data
 public class Game {
 
@@ -14,6 +14,7 @@ public class Game {
     private Long id;
 
     @JsonProperty("name")
+    @Column(unique = true)
     private String name;
 
     @JsonProperty("background_image")
@@ -25,8 +26,7 @@ public class Game {
 
     public Game(){}
 
-    public Game(Long id, String name, String background_image, double rating) {
-        this.id = id;
+    public Game(String name, String background_image, double rating) {
         this.name = name;
         this.background_image = background_image;
         this.rating = rating;

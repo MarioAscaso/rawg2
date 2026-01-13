@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Login - RAWG</title>
+</head>
+<body>
+<nav>
+    <a href="index.html">Inicio</a> |
+    <a href="search.html">Buscar</a> | 
+    <a href="favorites.html">Mis Favoritos</a> |
+    <a href="login.html">Login</a> |
+    <a href="register.html">Registro</a>
+</nav>
+
+    <h1>Iniciar Sesión</h1>
+    
+    <form id="login-form">
+        <input type="text" id="login-user" placeholder="Usuario" required>
+        <input type="password" id="login-pass" placeholder="Contraseña" required>
+        <button type="submit">Entrar</button>
+    </form>
+    
+    <p id="error-msg" style="color: red;"></p>
+
+    <script type="module" src="js/login.js"></script>
+</body>
+</html>

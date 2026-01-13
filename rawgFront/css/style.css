@@ -1,0 +1,182 @@
+/* === GENERAL === */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #151515; /* Fondo oscuro estilo RAWG */
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.3s;
+}
+
+/* === NAVEGACIÓN === */
+nav {
+    background-color: #202020;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+nav a {
+    color: #ccc;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+nav a:hover {
+    color: #fff;
+    background-color: #333;
+}
+
+/* Botón de cerrar sesión en el menú */
+nav button {
+    background-color: #d32f2f;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+}
+
+nav button:hover {
+    background-color: #b71c1c;
+}
+
+/* === FORMULARIOS (Login, Registro, Búsqueda) === */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    max-width: 400px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #202020;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Inputs bonitos */
+input[type="text"], 
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box; /* Para que el padding no rompa el ancho */
+}
+
+input:focus {
+    background-color: #444;
+    box-shadow: 0 0 0 2px #5c5c5c;
+}
+
+/* Botones generales */
+button {
+    cursor: pointer;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #000;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+button:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Botón específico de buscar */
+#search-btn {
+    margin-top: 10px;
+    width: 200px;
+}
+
+/* === GRILLA DE JUEGOS (Cards) === */
+#results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.game-card {
+    background-color: #202020;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.game-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 1px solid #333;
+}
+
+.game-card h3 {
+    margin: 15px;
+    font-size: 1.2rem;
+}
+
+.game-card p {
+    margin: 0 15px 15px;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+/* Botón de favoritos dentro de la card */
+.fav-btn {
+    margin: 0 15px 20px;
+    background-color: #4caf50; /* Verde */
+    color: white;
+    width: calc(100% - 30px); /* Ajuste para el padding */
+}
+
+.fav-btn:hover {
+    background-color: #43a047;
+}
+
+/* === MENSAJES DE ERROR/ÉXITO === */
+#message, #error-msg {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+}
