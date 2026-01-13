@@ -7,5 +7,5 @@ import java.util.List;
 public interface GameRepository {
     Game save(Game game);
     List<Game> findAll();
-    void deleteById(long id);
+    void deleteById(Long id);
 }

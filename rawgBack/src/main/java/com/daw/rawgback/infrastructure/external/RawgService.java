@@ -7,8 +7,6 @@ import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 @Service
 public class RawgService implements ExternalGameService {
 

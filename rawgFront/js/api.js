@@ -2,7 +2,7 @@ const API_BASE_URL = 'http://localhost:8084/api';
 
 export async function searchGamesApi(query) {
     try {
-        const response = await fetch(`${API_BASE_URL}/games?search=${encodeURIComponent(query)}`);
+        const response = await fetch(`${API_BASE_URL}/games?search=${query}`);
         if (!response.ok) throw new Error('Error en la búsqueda');
         const data = await response.json();
         return data.results || [];
@@ -12,6 +12,7 @@ export async function searchGamesApi(query) {
     }
 }
 
+
 export async function saveFavoriteApi(game) {
     try {
         const response = await fetch(`${API_BASE_URL}/favorites`, {
@@ -19,7 +20,7 @@ export async function saveFavoriteApi(game) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 name: game.name,
-                backgroundImage: game.background_image || game.backgroundImage,
+                backgroundImage: game.background_image,
                 rating: game.rating
             })
         });
@@ -27,5 +28,17 @@ export async function saveFavoriteApi(game) {
     } catch (error) {
         console.error("Error al guardar favorito:", error);
         return false;
+    }
+}
+
+export async function getFavoritesApi() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/favorites`);
+        if (!response.ok) throw new Error('Error al obtener favoritos');
+        const data = await response.json();
+        return data || [];
+    } catch (error) {
+        console.error("Error obteniendo favoritos:", error);
+        return [];
     }
 }

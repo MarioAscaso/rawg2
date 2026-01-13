@@ -16,28 +16,28 @@ public class Game {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("backgroundImage")
+    @JsonProperty("background_image")
     @Column(name = "background_image")
-    private String backgroundImage;
+    private String background_image;
 
     @JsonProperty("rating")
     private double rating;
 
     public Game(){}
 
-    public Game(Long id, String name, String backgroundImage, double rating) {
+    public Game(Long id, String name, String background_image, double rating) {
         this.id = id;
         this.name = name;
-        this.backgroundImage = backgroundImage;
+        this.background_image = background_image;
         this.rating = rating;
     }
 
     public Long getId() {return id;}
     public String getName() {return name;}
-    public String getBackgroundImage() {return backgroundImage;}
+    public String getBackgroundImage() {return background_image;}
     public double getRating() {return rating;}
 
     public void setName(String name) {this.name = name;}
-    public void setBackgroundImage(String backgroundImage) {this.backgroundImage = backgroundImage;}
+    public void setBackgroundImage(String backgroundImage) {this.background_image = backgroundImage;}
     public void setRating(double rating) {this.rating = rating;}
 }

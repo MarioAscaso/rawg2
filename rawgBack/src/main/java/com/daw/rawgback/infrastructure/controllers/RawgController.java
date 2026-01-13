@@ -2,8 +2,6 @@ package com.daw.rawgback.infrastructure.controllers;
 
 import com.daw.rawgback.app.RawgApp;
 import com.daw.rawgback.domain.models.Game;
-import com.daw.rawgback.infrastructure.external.RawgService;
-import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -34,10 +32,4 @@ public class RawgController {
     public List<Game> list(){
         return rawgApp.getFavorites();
     }
-
-    @GetMapping("/test")
-    public String test() {
-        return "El controlador funciona correctamente";
-    }
-
 }
