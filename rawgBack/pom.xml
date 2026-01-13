@@ -75,10 +75,10 @@
 			<artifactId>okhttp</artifactId>
 			<version>5.0.0-alpha.12</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 	<build>
