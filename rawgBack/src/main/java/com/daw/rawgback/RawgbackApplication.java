@@ -12,6 +12,6 @@ public class RawgbackApplication {
 
 }
 
-//Esos "servicios" (RawgService, UserService) son en realidad
-// implementaciones técnicas de interfaces de tu dominio. Al contener código que toca HTTP o JPA directamente, están
-// obligados a vivir en la capa de Infraestructura para mantener tu Dominio y tu Aplicación limpios de tecnología.
+//Esos "servicios" (RawgService, UserService) son en realidad implementaciones técnicas de interfaces de tu dominio.
+// Al contener código que toca HTTP o JPA directamente, están obligados a vivir en la capa de Infraestructura para mantener
+// tu Dominio y tu Aplicación limpios de tecnología.

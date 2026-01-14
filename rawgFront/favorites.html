@@ -2,52 +2,27 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Favoritos - RAWG App</title>
+    <title>Favoritos - RAWG</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<nav>
-    <a href="index.html" style="font-weight:900; font-size:1.5rem; letter-spacing: 2px;">RAWG</a>
-    <div style="flex:1"></div>
-    
-    <a href="login.html" id="nav-login">Login</a>
-    <a href="register.html" id="nav-register">Registro</a>
-    
-    <span id="user-display" class="user-badge"></span>
-    <button id="nav-logout" onclick="localStorage.clear(); window.location.href='login.html';" style="display:none;">Salir</button>
-</nav>
+    <nav>
+        <a href="index.html" style="font-weight:900; font-size:1.5rem;">RAWG</a>
+        <div style="flex:1"></div>
+        <span id="user-display" class="user-badge" style="display:none;"></span>
+        <button id="nav-logout" onclick="localStorage.clear(); window.location.href='login.html';" style="display:none;">Salir</button>
+    </nav>
 
     <div class="app-layout">
-        
         <aside id="sidebar-container" class="sidebar"></aside>
 
         <main class="main-content">
-            <h1>❤️ Mis Juegos Favoritos</h1>
-            <p style="text-align: center; color: #aaa;">Tu colección personal</p>
-
-            <div id="message"></div>
-
+            <h1>❤️ Mi Colección</h1>
+            <div id="message" style="text-align:center;"></div>
             <div id="results-container"></div>
         </main>
-    </div>
-
-    <div id="game-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div class="modal-header">
-                <h2 id="modal-title">Nombre del Juego</h2>
-                <p id="modal-rating">⭐ 0/5</p>
-            </div>
-            <div class="modal-body">
-                <div id="modal-image-container">
-                    <img id="modal-img" src="" alt="Juego">
-                </div>
-                <p id="modal-desc">Detalles del juego...</p>
-            </div>
-        </div>
     </div>
 
     <script type="module" src="js/navbar.js"></script>

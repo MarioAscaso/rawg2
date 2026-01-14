@@ -7,7 +7,7 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    // Mostramos un "Cargando..."
+    // Spinner de carga mientras registra
     Swal.fire({
         title: 'Registrando...',
         text: 'Por favor espera',
@@ -28,6 +28,7 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
             window.location.href = 'login.html';
         });
     } else {
+        // Si falla (ej: usuario ya existe)
         Swal.fire({
             icon: 'error',
             title: 'Error',

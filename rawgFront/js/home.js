@@ -1,11 +1,10 @@
-//
 import { getPopularGamesApi, saveFavoriteApi, getGameDetailsApi, isUserLoggedIn, getExchangeRateApi } from './api.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById('home-games-container');
     const loading = document.getElementById('loading');
 
-    // === ELEMENTOS DEL MODAL ===
+    // === ELEMENTOS DEL MODAL (POP-UP) ===
     const modal = document.getElementById('game-modal');
     const modalImg = document.getElementById('modal-img');
     const modalTitle = document.getElementById('modal-title');
@@ -13,8 +12,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const modalRating = document.getElementById('modal-rating');
     const closeModal = document.querySelector('.close-modal');
     
-    let carouselInterval; 
+    let carouselInterval; // Variable para controlar el efecto visual del modal
 
+    // Funciones para cerrar el modal limpiamente
     const closeGameModal = () => {
         if(modal) modal.style.display = "none";
         if(carouselInterval) clearInterval(carouselInterval);
@@ -23,8 +23,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if(closeModal) closeModal.onclick = closeGameModal;
     window.onclick = (event) => { if (event.target == modal) closeGameModal(); }
 
-    // 1. CARGA DE DATOS EN PARALELO (Juegos + Divisa)
-    // Usamos Promise.all para que sea más rápido
+    // 1. CARGA EN PARALELO (Optimización)
+    // Usamos Promise.all para pedir juegos y divisas a la vez. Es más rápido.
     const [games, exchangeRate] = await Promise.all([
         getPopularGamesApi(),
         getExchangeRateApi()
@@ -32,20 +32,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     if (loading) loading.style.display = 'none';
 
-    // 2. Pintar las tarjetas
+    // 2. RENDERIZADO DE TARJETAS
     games.forEach(game => {
         const card = document.createElement('div');
         card.classList.add('game-card');
 
-        // Imagen (con el fix de placehold.co que hicimos antes)
+        // Imagen con fallback por si viene rota (placehold.co)
         const imageSrc = game.background_image || 'https://placehold.co/300x200?text=No+Image';
 
         // === LÓGICA DE PRECIOS ===
-        // Generamos un precio aleatorio entre 19.99 y 69.99
-        // (Usamos el ID del juego para que el precio sea "fijo" y no cambie al recargar si quisieras)
+        // Generamos un precio aleatorio en Euros y calculamos el Dólar real usando la API.
         const randomPriceEur = (Math.random() * (70 - 20) + 20).toFixed(2);
-        
-        // Convertimos a Dólares
         const priceUsd = (randomPriceEur * exchangeRate).toFixed(2);
 
         card.innerHTML = `
@@ -60,22 +57,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p>⭐ ${game.rating} / 5</p>
         `;
 
-        // ... (El resto del código del Modal y Favoritos sigue IGUAL que antes) ...
-        // ... Solo copio la parte del click para no hacer el mensaje eterno, 
-        // ... pero tú mantén toda la lógica del modal y el botón de favoritos aquí.
-        
-        // --- COPIA AQUÍ LA LÓGICA DEL CLIC EN IMAGEN Y BOTÓN FAVORITOS QUE YA TENÍAS ---
+        // === EVENTO CLICK EN IMAGEN (ABRIR MODAL) ===
         const imgElement = card.querySelector('img');
         imgElement.addEventListener('click', async () => {
-             // ... Tu lógica del modal ...
              if(modal) {
+                // a) Mostramos datos básicos inmediatos
                 modal.style.display = "flex";
                 modalTitle.textContent = game.name;
                 modalImg.src = imageSrc;
                 modalRating.textContent = `⭐ ${game.rating} / 5`;
                 modalDesc.innerHTML = '<div class="spinner"></div><p style="text-align:center;">Cargando...</p>';
                 
-                // Efecto visual
+                // b) Efecto visual "latido" en la imagen cada 3 seg
                 let toggle = false;
                 if(carouselInterval) clearInterval(carouselInterval);
                 carouselInterval = setInterval(() => {
@@ -83,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     toggle = !toggle;
                 }, 3000);
 
+                // c) Pedimos la descripción completa al servidor (Asíncrono)
                 const details = await getGameDetailsApi(game.id);
                 if (details && (details.description || details.description_raw)) {
                     modalDesc.innerHTML = details.description || details.description_raw;
@@ -92,6 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
              }
         });
 
+        // === BOTÓN FAVORITOS (SweetAlert) ===
         const favBtn = document.createElement('button');
         favBtn.classList.add('fav-btn');
         favBtn.textContent = 'Añadir a Favoritos';

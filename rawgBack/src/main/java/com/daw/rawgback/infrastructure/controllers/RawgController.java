@@ -5,12 +5,12 @@ import com.daw.rawgback.domain.models.Game;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.security.Principal; // Importante para saber quién es el usuario
+import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
-@CrossOrigin(origins = "*") // Permite peticiones desde tu Frontend
+@RequestMapping("/api") // Ruta base: /api
+@CrossOrigin(origins = "*")
 public class RawgController {
 
     private final RawgApp rawgApp;
@@ -19,28 +19,29 @@ public class RawgController {
         this.rawgApp = rawgApp;
     }
 
-    // 1. ESTE ES EL MÉTODO QUE FALTABA (BUSCAR JUEGOS)
+    // BUSCAR JUEGOS
+    // @RequestParam(required = false): permite llamar a /api/games sin parámetros (devuelve populares)
     @GetMapping("/games")
-    // CAMBIO: required = false para que funcione si no enviamos nada
     public String search(@RequestParam(required = false) String search) throws IOException {
         return rawgApp.searchGames(search);
     }
 
-    // 2. GUARDAR FAVORITO (Ahora usa Principal para saber el usuario)
-    @PostMapping("/favorites")
-    public void save(@RequestBody Game game, Principal principal) {
-        // 'principal.getName()' nos da el nombre del usuario logueado (ej: "admin")
-        rawgApp.saveFavorite(principal.getName(), game);
-    }
-
-    // 3. LISTAR FAVORITOS (Solo devuelve los del usuario logueado)
-    @GetMapping("/favorites")
-    public List<Game> list(Principal principal) {
-        return rawgApp.getFavorites(principal.getName());
-    }
-
+    // DETALLES DE JUEGO (Por ID)
     @GetMapping("/games/{id}")
     public String getDetails(@PathVariable String id) {
         return rawgApp.getGameDetails(id);
+    }
+
+    // GUARDAR FAVORITO
+    @PostMapping("/favorites")
+    public void save(@RequestBody Game game, Principal principal) {
+        // Usamos principal.getName() para saber a qué usuario asociar el favorito
+        rawgApp.saveFavorite(principal.getName(), game);
+    }
+
+    // LISTAR FAVORITOS
+    @GetMapping("/favorites")
+    public List<Game> list(Principal principal) {
+        return rawgApp.getFavorites(principal.getName());
     }
 }

@@ -10,31 +10,20 @@
 <body>
 
     <nav>
-        <a href="index.html" style="font-weight:900; font-size:1.5rem; letter-spacing: 2px;">RAWG</a>
+        <a href="index.html" style="font-weight:900; font-size:1.5rem;">RAWG</a>
         <div style="flex:1"></div>
-        <a href="login.html" id="nav-login">Iniciar Sesión</a>
-        
-        <span id="user-display" class="user-badge"></span>
-        <button id="nav-logout" onclick="localStorage.clear(); window.location.href='login.html';" style="display:none;">Salir</button>
+        <a href="login.html">Login</a>
     </nav>
 
     <h1>Crear Cuenta</h1>
     
     <form id="register-form">
-        <input type="text" id="username" placeholder="Elige un usuario" required>
-        <input type="email" id="email" placeholder="Tu correo electrónico" required>
-        <input type="password" id="password" placeholder="Elige una contraseña" required>
-        
-        <button type="submit">Registrarse</button>
-
-        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">
-            ¿Ya tienes cuenta? <a href="login.html" style="color: #4caf50;">Entra aquí</a>
-        </p>
+        <input type="text" id="username" placeholder="Nombre de usuario" required>
+        <input type="email" id="email" placeholder="Correo electrónico" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button type="submit" style="background-color: var(--accent); color: white;">Registrarse</button>
     </form>
-    
-    <div id="error-msg" style="color: #d32f2f; text-align: center;"></div>
 
-    <script type="module" src="js/navbar.js"></script>
     <script type="module" src="js/register.js"></script>
 </body>
 </html>

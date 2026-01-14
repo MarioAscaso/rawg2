@@ -5,23 +5,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById('search-input');
     const resultsContainer = document.getElementById('results-container');
     const message = document.getElementById('message');
-    const loadingSpinner = document.getElementById('loading-spinner'); // Nuevo elemento
+    const loadingSpinner = document.getElementById('loading-spinner');
 
     searchForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Evita que la página se recargue
+        e.preventDefault(); 
         
         const query = searchInput.value.trim();
         if (!query) return;
 
-        // 1. Preparamos la interfaz (Limpiar y mostrar carga)
+        // Limpiar resultados anteriores y mostrar carga
         resultsContainer.innerHTML = '';
         message.textContent = '';
-        loadingSpinner.style.display = 'block'; // Mostramos la rueda girando
+        loadingSpinner.style.display = 'block'; 
 
-        // 2. Buscamos en la API
+        // Buscar en la API
         const games = await searchGamesApi(query);
 
-        // 3. Ocultamos carga
         loadingSpinner.style.display = 'none';
 
         if (!games || games.length === 0) {
@@ -29,13 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // 4. Pintamos los resultados
+        // Renderizar resultados (similar a home.js)
         games.forEach(game => {
             const card = document.createElement('div');
             card.classList.add('game-card');
-
-            // Imagen con backup
-            const imageSrc = game.background_image || 'https://placehold.co/300x200?text=No+Image';
+            const imageSrc = game.background_image || 'https://placehold.co/300x200?text=No+Image'; //
 
             card.innerHTML = `
                 <img src="${imageSrc}" alt="${game.name}">

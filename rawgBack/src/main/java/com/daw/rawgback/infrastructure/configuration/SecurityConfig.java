@@ -16,39 +16,44 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-@Configuration
-@EnableWebSecurity
+@Configuration // Clase de configuración de Spring
+@EnableWebSecurity // Habilita la seguridad web
 public class SecurityConfig {
 
+    // Define la cadena de filtros de seguridad.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults()) // 1. Activa la configuración CORS
+                // 1. CORS: Permite peticiones desde el frontend (que corre en otro puerto).
+                .cors(Customizer.withDefaults())
+                // 2. CSRF: Desactivado porque usamos API REST sin estado (no cookies de sesión complejas).
                 .csrf(AbstractHttpConfigurer::disable)
+                // 3. Autorización de rutas:
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/user/users").permitAll() // Registro público
-                        .requestMatchers(HttpMethod.GET, "/api/games").permitAll()   // Búsqueda pública
-                        .anyRequest().authenticated() // Lo demás privado
+                        .requestMatchers(HttpMethod.POST, "/user/users").permitAll() // Registro PÚBLICO
+                        .requestMatchers(HttpMethod.GET, "/api/games").permitAll()   // Buscar juegos PÚBLICO
+                        .anyRequest().authenticated() // Cualquier otra cosa requiere LOGIN
                 )
-                .httpBasic(Customizer.withDefaults()
-                );
+                // 4. Basic Auth: Usamos cabecera Authorization en cada petición.
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
 
-    // 2. Definimos las reglas de CORS globales para Spring Security
+    // Configuración detallada de CORS para permitir al navegador hablar con el servidor.
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*")); // Permite a cualquier frontend (cambiar por http://localhost:5500 en producción)
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedOrigins(List.of("*")); // Permitir cualquier origen (útil desarrollo)
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Verbos permitidos
+        configuration.setAllowedHeaders(List.of("*")); // Cabeceras permitidas
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", configuration); // Aplica a toda la app
         return source;
     }
 
+    // Define el encriptador de contraseñas. BCrypt es el estándar seguro hoy día.
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -1,7 +1,9 @@
 import { loginUserApi } from './api.js';
 
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+const form = document.getElementById('login-form');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Evita que la página se recargue (HTML form default behavior)
     
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
@@ -14,7 +16,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const success = await loginUserApi(username, password);
 
     if (success) {
-        // Alerta tipo "Toast" (pequeña en la esquina)
+        // Alerta bonita "Toast"
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -30,6 +32,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         
         window.location.href = 'index.html'; 
     } else {
+        // Alerta de error
         Swal.fire({
             icon: 'error',
             title: 'Acceso denegado',

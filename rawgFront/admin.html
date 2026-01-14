@@ -2,87 +2,31 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - RAWG</title>
+    <title>Admin - RAWG</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/style.css">
-    
     <style>
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #202020;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        .admin-table th, .admin-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #333;
-        }
-
-        .admin-table th {
-            background-color: #2c0e0e;
-            color: #ff5252;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        .admin-table tr:hover {
-            background-color: #2a2a2a;
-        }
-
-        .role-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .role-admin { background-color: #d32f2f; color: white; }
-        .role-user { background-color: #4caf50; color: white; }
-
-        .delete-btn {
-            background-color: #d32f2f;
-            color: white;
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-
-        .delete-btn:hover { background-color: #b71c1c; }
+        /* Estilos específicos para la tabla de admin */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: var(--bg-card); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #333; }
+        th { background-color: #2c0e0e; color: var(--danger); }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="index.html" style="font-weight:900; font-size:1.5rem; letter-spacing: 2px;">RAWG ADMIN</a>
+        <a href="index.html" style="font-weight:900; font-size:1.5rem;">RAWG ADMIN</a>
         <div style="flex:1"></div>
-        <span id="user-display" class="user-badge"></span>
         <button onclick="localStorage.clear(); window.location.href='login.html';">Salir</button>
     </nav>
 
     <div class="app-layout">
-        
         <aside id="sidebar-container" class="sidebar"></aside>
 
         <main class="main-content">
-            <h1 style="text-align: left; border-bottom: 2px solid #d32f2f; padding-bottom: 10px;">
-                🛡️ Gestión de Usuarios
-            </h1>
-            <p style="color: #aaa;">
-                Control total de los usuarios registrados en la plataforma.
-            </p>
-
-            <div id="loading-msg">Cargando datos...</div>
+            <h1 style="border-bottom: 2px solid var(--danger);">🛡️ Gestión Usuarios</h1>
             
+            <div id="loading-msg">Cargando datos...</div>
             <div id="table-container"></div>
         </main>
     </div>
@@ -96,90 +40,42 @@
         document.addEventListener("DOMContentLoaded", async () => {
             const role = localStorage.getItem('rawg_role');
             if (role !== 'ADMIN') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Acceso Denegado',
-                    text: 'Zona exclusiva para administradores',
-                    allowOutsideClick: false
-                }).then(() => {
-                    window.location.href = 'index.html';
-                });
+                window.location.href = 'index.html'; // Protección básica
                 return;
             }
-
-            const tableContainer = document.getElementById('table-container');
-            const loadingMsg = document.getElementById('loading-msg');
 
             const users = await getAllUsersApi();
-            loadingMsg.style.display = 'none';
+            document.getElementById('loading-msg').style.display = 'none';
+            const container = document.getElementById('table-container');
 
-            if (!users || users.length === 0) {
-                tableContainer.innerHTML = "<p>No se han encontrado usuarios</p>";
-                return;
-            }
-
-            let html = `
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Usuario</th>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
+            let html = `<table><thead><tr><th>ID</th><th>Usuario</th><th>Email</th><th>Rol</th><th>Acciones</th></tr></thead><tbody>`;
+            
             users.forEach(u => {
-                const roleClass = u.role === 'ADMIN' ? 'role-admin' : 'role-user';
-                const deleteAction = u.role === 'ADMIN' 
-                    ? '<span style="color:#666; font-style:italic;">Protegido</span>' 
-                    : `<button class="delete-btn" onclick="window.confirmDelete(${u.id}, '${u.username}')">Eliminar</button>`;
-
-                html += `
-                    <tr>
-                        <td>#${u.id}</td>
-                        <td><strong>${u.username}</strong></td>
-                        <td>${u.email || 'Sin email'}</td>
-                        <td><span class="role-badge ${roleClass}">${u.role}</span></td>
-                        <td>${deleteAction}</td>
-                    </tr>
-                `;
+                const deleteBtn = u.role === 'ADMIN' 
+                    ? '<span style="color:#666">Protegido</span>' 
+                    : `<button onclick="window.confirmDelete(${u.id}, '${u.username}')" style="background:var(--danger); border:none; color:white; padding:5px 10px; cursor:pointer;">Eliminar</button>`;
+                
+                html += `<tr>
+                    <td>${u.id}</td>
+                    <td><strong>${u.username}</strong></td>
+                    <td>${u.email || '-'}</td>
+                    <td>${u.role}</td>
+                    <td>${deleteBtn}</td>
+                </tr>`;
             });
-
-            html += `</tbody></table>`;
-            tableContainer.innerHTML = html;
+            html += '</tbody></table>';
+            container.innerHTML = html;
         });
 
-        window.confirmDelete = async (id, username) => {
-            // Reemplazo del confirm nativo por SweetAlert
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: `Vas a eliminar al usuario ${username}. Esto no se puede deshacer.`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    const success = await deleteUserApi(id);
-                    if (success) {
-                        Swal.fire(
-                            '¡Eliminado!',
-                            'El usuario ha sido eliminado.',
-                            'success'
-                        ).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire('Error', 'No se pudo eliminar al usuario.', 'error');
-                    }
-                }
+        // Función global para el onclick
+        window.confirmDelete = async (id, name) => {
+            const res = await Swal.fire({
+                title: '¿Seguro?', text: `Borrar a ${name}`, icon: 'warning', showCancelButton: true
             });
+            if (res.isConfirmed) {
+                await deleteUserApi(id);
+                location.reload();
+            }
         };
     </script>
 </body>

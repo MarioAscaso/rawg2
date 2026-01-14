@@ -4,9 +4,9 @@ import com.daw.rawgback.domain.models.User;
 import com.daw.rawgback.domain.services.InternalUserService;
 import com.daw.rawgback.infrastructure.repositories.JpaUserRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
+// Implementación del servicio interno de usuarios
 @Service
 public class UserService implements InternalUserService {
 

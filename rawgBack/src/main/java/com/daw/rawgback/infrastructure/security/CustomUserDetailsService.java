@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+// Esta clase es el "puente" entre Spring Security y nuestra base de datos.
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -16,18 +17,19 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    // Este metodo lo llama Spring automáticamente cuando alguien intenta hacer login.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // 1. Buscamos el usuario en TU base de datos usando tu repositorio existente
+        // 1. Buscamos el usuario en nuestra tabla 'users'.
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
-        // 2. Convertimos tu User a un UserDetails que entiende Spring Security
+        // 2. Convertimos nuestro objeto 'User' a un objeto 'UserDetails' que entiende Spring Security.
         return org.springframework.security.core.userdetails.User
                 .builder()
                 .username(user.getUsername())
-                .password(user.getPassword()) // Spring verificará esto automáticamente
-                .roles(user.getRole() != null ? user.getRole() : "USER") // Si es null, ponemos "USER" por defecto
+                .password(user.getPassword()) // Spring comparará este hash con el que viene del login.
+                .roles(user.getRole() != null ? user.getRole() : "USER") // Asignamos roles.
                 .build();
     }
 }

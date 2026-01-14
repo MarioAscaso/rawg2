@@ -4,10 +4,10 @@ import com.daw.rawgback.domain.models.Game;
 import com.daw.rawgback.domain.repositories.GameRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
 
 @Repository
 public interface JpaGameRepository extends JpaRepository<Game, Long>, GameRepository {
+    // Método mágico de Spring Data: SELECT * FROM games WHERE name = ?
     Optional<Game> findByName(String name);
 }

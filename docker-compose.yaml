@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  web:
+    build: ./rawgBack        # 1. Apuntamos a la carpeta correcta
+    ports:
+      - "8084:8084"
+    links:
+      - db
+    environment:
+      # 2. Le decimos que la BD está en 'db', no en 'localhost'
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/rawg_db?createDatabaseIfNotExist=true&useSSL=false
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    environment:
+      # 3. Obligatorio para que MySQL arranque
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rawg_db

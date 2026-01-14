@@ -1,482 +1,273 @@
-/* === GENERAL === */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #151515; /* Fondo oscuro principal */
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
+/* =========================================
+   1. VARIABLES Y RESET (Base)
+   ========================================= */
+:root {
+    /* Definimos colores en variables para cambiarlos fácil en el futuro */
+    --bg-dark: #151515;       /* Fondo principal (muy oscuro) */
+    --bg-card: #202020;       /* Fondo de tarjetas/paneles (gris oscuro) */
+    --text-main: #ffffff;     /* Texto blanco */
+    --text-muted: #aaaaaa;    /* Texto gris suave (secundario) */
+    --accent: #4caf50;        /* Verde corporativo (Botones, enlaces) */
+    --accent-hover: #43a047;  /* Verde más oscuro para hover */
+    --danger: #d32f2f;        /* Rojo para errores/eliminar */
+    --sidebar-width: 250px;   /* Ancho fijo de la barra lateral */
 }
 
+/* Reset básico para quitar márgenes por defecto del navegador */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6; /* Mejora la legibilidad */
+}
+
+/* Títulos centrados y grandes */
 h1 {
     text-align: center;
     margin-top: 40px;
     font-size: 2.5rem;
     font-weight: 700;
-    color: #fff;
 }
 
+/* Enlaces sin subrayado feo */
 a {
     text-decoration: none;
     color: inherit;
-    transition: 0.3s;
+    transition: 0.3s; /* Suaviza el cambio de color al pasar el ratón */
 }
 
-/* === NAVEGACIÓN SUPERIOR === */
+/* =========================================
+   2. BARRA DE NAVEGACIÓN SUPERIOR (Navbar)
+   ========================================= */
 nav {
-    background-color: #202020;
+    background-color: var(--bg-card);
     padding: 15px 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    display: flex; /* Flexbox: Alinea los elementos en fila */
+    align-items: center; /* Centra verticalmente */
+    gap: 20px; /* Espacio entre botones */
+    
+    /* Sticky: Hace que la barra se quede fija arriba al hacer scroll */
     position: sticky;
     top: 0;
-    z-index: 100;
-    position: relative; 
-}
-
-nav a {
-    color: #ccc;
-    font-weight: 600;
-    font-size: 1.1rem;
-    padding: 8px 12px;
-    border-radius: 5px;
+    z-index: 100; /* Se asegura de estar por encima de todo */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Sombra elegante */
 }
 
 nav a:hover {
     color: #fff;
     background-color: #333;
+    border-radius: 5px;
 }
 
-/* Botón de cerrar sesión en el menú */
-nav button {
-    background-color: #d32f2f;
+/* Badge del usuario (se muestra si estás logueado) */
+.user-badge {
+    background-color: #333;
+    color: var(--accent);
     padding: 6px 15px;
-    font-size: 0.9rem;
-    color: white;
+    border-radius: 20px;
+    font-weight: bold;
+    border: 1px solid var(--accent);
 }
 
-nav button:hover {
-    background-color: #b71c1c;
-    transform: scale(1.05);
-}
-
-/* === LAYOUT PRINCIPAL (Sidebar + Contenido) === */
+/* =========================================
+   3. LAYOUT PRINCIPAL (Sidebar + Contenido)
+   ========================================= */
 .app-layout {
-    display: flex; /* Esto pone el sidebar al lado del contenido */
-    max-width: 1600px;
-    margin: 0 auto;
-    min-height: 100vh;
+    display: flex; /* Pone el sidebar (izq) y el main (der) en fila */
+    max-width: 1600px; /* Evita que la web se estire demasiado en pantallas gigantes */
+    margin: 0 auto; /* Centra la web horizontalmente */
+    min-height: 100vh; /* Ocupa al menos toda la altura de la pantalla */
 }
 
-/* === SIDEBAR (Izquierda) === */
+/* BARRA LATERAL (Izquierda) */
 .sidebar {
-    width: 250px;
+    width: var(--sidebar-width);
+    background-color: var(--bg-dark);
     padding: 30px 20px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    border-right: 1px solid #333; /* Línea separadora sutil */
     
-    /* Sticky para que baje al hacer scroll */
+    /* Sticky: La barra lateral te sigue al bajar */
     position: sticky;
-    top: 70px; /* Altura aprox del navbar */
+    top: 70px; /* Empieza debajo del navbar */
     height: calc(100vh - 70px);
-    overflow-y: auto;
-    border-right: 1px solid #333;
-    background-color: #151515;
-}
-
-.sidebar h3 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-    color: #fff;
-    font-weight: 800;
-    border-bottom: 2px solid #4caf50;
-    display: inline-block;
-    width: fit-content;
+    overflow-y: auto; /* Si el menú es muy largo, hace scroll interno */
+    flex-shrink: 0; /* Evita que se encoja si falta espacio */
 }
 
 .sidebar a {
-    color: #ccc;
-    font-size: 1.05rem;
+    display: block; /* Cada enlace ocupa su propia línea */
     padding: 10px 15px;
+    margin-bottom: 5px;
     border-radius: 8px;
-    display: block;
-    transition: 0.2s;
+    color: #ccc;
 }
 
-.sidebar a:hover {
+.sidebar a:hover, .sidebar a.active {
     background-color: #333;
     color: #fff;
-    transform: translateX(5px);
+    transform: translateX(5px); /* Efecto de movimiento a la derecha */
 }
 
-.sidebar a.active {
-    background-color: #fff;
-    color: #000;
-    font-weight: bold;
-}
-
-/* === CONTENIDO PRINCIPAL (Derecha) === */
+/* CONTENIDO PRINCIPAL (Derecha) */
 .main-content {
-    flex: 1;
+    flex: 1; /* Ocupa todo el espacio restante disponible */
     padding: 20px;
-    width: 100%;
 }
 
-/* === BUSCADOR HERO === */
-.search-hero {
-    text-align: center;
-    padding: 60px 20px 40px;
-    background: linear-gradient(180deg, #151515 0%, #202020 100%);
-    margin-bottom: 30px;
-    border-bottom: 1px solid #333;
-    border-radius: 10px;
-}
-
-.search-hero h1 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 3rem;
-    color: #fff;
-    text-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
-}
-
-.search-hero p {
-    color: #aaa;
-    margin-bottom: 30px;
-    font-size: 1.1rem;
-}
-
-.search-bar-wrapper {
-    display: flex;
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #333;
-    border-radius: 50px;
-    padding: 5px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-    border: 1px solid #444;
-    transition: 0.3s;
-}
-
-.search-bar-wrapper:focus-within {
-    border-color: #4caf50;
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
-    transform: scale(1.02);
-}
-
-.search-hero input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    padding: 15px 25px;
-    font-size: 1.2rem;
-    color: white;
-    outline: none;
-    box-shadow: none;
-}
-
-.search-hero button {
-    background-color: #4caf50;
-    color: white;
-    border-radius: 50px;
-    padding: 10px 30px;
-    margin: 0;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: none;
-}
-
-.search-hero button:hover {
-    background-color: #43a047;
-    transform: none;
-}
-
-/* === SPINNER DE CARGA === */
-.spinner {
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border-left-color: #4caf50;
-    margin: 20px auto;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* === USUARIO LOGUEADO (Badge) === */
-.user-badge {
-    position: static; 
-    transform: none;
-    background-color: #333;
-    color: #4caf50;
-    padding: 6px 15px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    border: 1px solid #4caf50;
-    margin-left: 15px; 
-    display: none; 
-}
-
-/* === FORMULARIOS (Login, Registro) === */
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    max-width: 400px;
-    margin: 40px auto;
-    padding: 40px;
-    background-color: #202020;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-
-input[type="text"], 
-input[type="password"],
-input[type="email"] {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    background-color: #333;
-    color: white;
-    font-size: 1rem;
-    outline: none;
-    box-sizing: border-box;
-}
-
-input:focus {
-    background-color: #444;
-    box-shadow: 0 0 0 2px #5c5c5c;
-}
-
-button {
-    cursor: pointer;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 1rem;
-    background-color: #fff;
-    color: #000;
-    transition: transform 0.2s, background-color 0.2s;
-}
-
-button:hover {
-    background-color: #e0e0e0;
-    transform: scale(1.05);
-}
-
-button:active {
-    transform: scale(0.95);
-}
-
-#search-btn {
-    margin-top: 10px;
-    width: 100%;
-    max-width: 200px;
-}
-
-#search-input {
-    padding: 12px;
-    width: 300px;
-    border-radius: 5px;
-    border: none;
-    margin-bottom: 10px;
-}
-
-/* === GRILLA DE JUEGOS (Cards) === */
-#results-container, #home-games-container {
+/* =========================================
+   4. GRILLA DE JUEGOS (Grid System)
+   ========================================= */
+#home-games-container, #results-container {
     display: grid;
+    /* MAGIA GRID: Crea tantas columnas como quepan de mínimo 250px */
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 30px;
+    gap: 30px; /* Espacio entre tarjetas */
     padding: 20px 0;
-    max-width: 100%;
-    margin: 0 auto;
 }
 
+/* TARJETA DE JUEGO (Card) */
 .game-card {
-    background-color: #202020;
+    background-color: var(--bg-card);
     border-radius: 12px;
-    overflow: hidden;
+    overflow: hidden; /* Recorta la imagen si se sale de las esquinas redondeadas */
     transition: transform 0.3s, box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    
+    display: flex;
+    flex-direction: column; /* Pone imagen, título y botón en columna */
 }
 
 .game-card:hover {
-    transform: translateY(-7px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    transform: translateY(-7px); /* Se eleva al pasar el ratón */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5); /* Sombra más fuerte */
 }
 
 .game-card img {
     width: 100%;
     height: 180px;
-    object-fit: cover;
+    object-fit: cover; /* Recorta la imagen para llenar el hueco sin deformarse */
     border-bottom: 1px solid #333;
 }
 
 .game-card h3 {
     margin: 15px;
-    font-size: 1.2rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0 10px;
+    font-size: 1.1rem;
+    white-space: nowrap; /* Evita que el texto salte de línea */
+    overflow: hidden;    /* Oculta lo que sobra */
+    text-overflow: ellipsis; /* Pone puntos suspensivos (...) */
 }
 
-.game-card p {
-    margin: 0 15px 15px;
-    color: #aaa;
-    font-size: 0.9rem;
-}
-
-.fav-btn {
-    margin: 10px 15px 20px;
-    background-color: #4caf50;
-    color: white;
-    width: calc(100% - 30px);
-}
-
-.fav-btn:hover {
-    background-color: #43a047;
-}
-
-/* === MENSAJES === */
-#message, #error-msg {
-    text-align: center;
-    font-weight: bold;
-    margin-top: 15px;
-    min-height: 20px;
-}
-
-/* === MODAL (Pop-up) === */
-.modal {
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.8); /* Fondo oscuro semitransparente */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px); /* Efecto borroso de fondo */
-    animation: fadeIn 0.3s;
-}
-
-/* */
-/* === ETIQUETA DE PRECIO === */
+/* ETIQUETA DE PRECIO (Flotante sobre la imagen) */
 .price-badge {
     position: absolute;
     bottom: 10px;
     right: 10px;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: #4caf50; /* Verde dinero */
+    background-color: rgba(0, 0, 0, 0.85); /* Fondo semitransparente */
+    color: var(--accent);
     padding: 5px 10px;
     border-radius: 8px;
     font-weight: bold;
-    border: 1px solid #4caf50;
+    border: 1px solid var(--accent);
     display: flex;
-    flex-direction: column; /* Para poner € arriba y $ abajo */
+    flex-direction: column; /* € arriba, $ abajo */
     align-items: flex-end;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px); /* Efecto borroso detrás */
+}
+
+/* BOTÓN DE ACCIÓN (Añadir/Eliminar) */
+.fav-btn {
+    margin: auto 15px 20px; /* Auto arriba empuja el botón al fondo de la tarjeta */
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.fav-btn:hover { background-color: var(--accent-hover); }
+
+/* =========================================
+   5. FORMULARIOS (Login/Registro)
+   ========================================= */
+form {
+    max-width: 400px;
+    margin: 40px auto; /* Centrado horizontal */
+    padding: 40px;
+    background-color: var(--bg-card);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espacio entre inputs */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+input {
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #333;
+    color: white;
+    outline: none;
+}
+
+input:focus { border-color: var(--accent); }
+
+/* =========================================
+   6. MODAL (Ventana Emergente)
+   ========================================= */
+.modal {
+    position: fixed; /* Fijo respecto a la ventana, no al contenido */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.85); /* Fondo negro casi opaco */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Por encima de todo */
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s; /* Animación de entrada suave */
 }
 
 .modal-content {
-    background-color: #202020;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
+    background-color: var(--bg-card);
+    padding: 30px;
+    border-radius: 15px;
     max-width: 600px;
-    box-shadow: 0 5px 30px rgba(0,0,0,0.5);
-    border: 1px solid #444;
+    width: 90%;
     text-align: center;
+    border: 1px solid #444;
     position: relative;
 }
 
+/* Animación de aparición */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; } to { opacity: 1; }
 }
 
-.close-modal {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close-modal:hover { color: #fff; }
-
-#modal-image-container img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    transition: all 0.5s ease-in-out; /* Transición suave para el carrusel */
-}
-
-/* === RESPONSIVE === */
+/* =========================================
+   7. RESPONSIVE DESIGN (Móvil)
+   ========================================= */
+/* Cuando la pantalla es menor de 900px (Tablets/Móviles) */
 @media (max-width: 900px) {
     .app-layout {
-        flex-direction: column;
+        flex-direction: column; /* Cambiamos de fila a columna */
     }
+    
     .sidebar {
         width: 100%;
         height: auto;
-        position: static;
+        position: static; /* Ya no es sticky */
         border-right: none;
         border-bottom: 1px solid #333;
-        flex-direction: row; 
+        display: flex; /* Menú horizontal desplazable */
         overflow-x: auto; 
-        padding: 15px;
+        padding: 10px;
     }
-    .sidebar h3 {
-        display: none; 
-    }
-}
-
-@media (max-width: 768px) {
-    nav {
-        flex-wrap: wrap;
-        padding-top: 50px;
-        gap: 10px;
-    }
-    .user-badge {
-        top: 15px;
-        right: 50%;
-        transform: translateX(50%);
-        width: max-content;
-    }
-    form {
-        width: 90%;
-        padding: 20px;
-    }
-    #results-container {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-    .search-hero h1 {
-        font-size: 2rem;
-    }
+    
+    .sidebar h3 { display: none; } /* Ocultamos títulos para ahorrar espacio */
+    .sidebar a { white-space: nowrap; margin-right: 10px; }
 }
