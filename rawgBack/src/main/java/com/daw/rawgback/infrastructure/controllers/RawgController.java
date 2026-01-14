@@ -38,4 +38,9 @@ public class RawgController {
     public List<Game> list(Principal principal) {
         return rawgApp.getFavorites(principal.getName());
     }
+
+    @GetMapping("/games/{id}")
+    public String getDetails(@PathVariable String id) {
+        return rawgApp.getGameDetails(id);
+    }
 }

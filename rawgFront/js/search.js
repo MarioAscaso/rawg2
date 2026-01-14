@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             card.classList.add('game-card');
 
             // Imagen con backup
-            const imageSrc = game.background_image || 'https://via.placeholder.com/300x200?text=No+Image';
+            const imageSrc = game.background_image || 'https://placehold.co/300x200?text=No+Image';
 
             card.innerHTML = `
                 <img src="${imageSrc}" alt="${game.name}">

@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         card.classList.add('game-card'); // La clase clave del CSS
 
         // Aseguramos que la imagen existe
-        const imageSrc = game.background_image || 'https://via.placeholder.com/300x200?text=Sin+Imagen';
+        const imageSrc = game.background_image || 'https://placehold.co/300x200?text=Sin+Imagen';
 
         card.innerHTML = `
             <img src="${imageSrc}" alt="${game.name}">

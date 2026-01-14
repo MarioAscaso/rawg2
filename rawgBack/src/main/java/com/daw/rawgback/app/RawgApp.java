@@ -53,4 +53,8 @@ public class RawgApp {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
         return user.getFavorites();
     }
+
+    public String getGameDetails(String gameId) {
+        return externalGameService.fetchGameDetails(gameId);
+    }
 }

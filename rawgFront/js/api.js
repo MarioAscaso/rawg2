@@ -177,3 +177,31 @@ export async function deleteUserApi(id) {
         return false;
     }
 }
+
+// Obtener detalles de un juego específico
+export async function getGameDetailsApi(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/games/${id}`, {
+             headers: { ...getAuthHeaders() }
+        });
+        if (!response.ok) throw new Error('Error cargando detalles');
+        return await response.json();
+    } catch (error) {
+        console.error("Error en detalles:", error);
+        return null;
+    }
+}
+
+
+// 8. === NUEVO: API DE DIVISAS (Euro a Dólar) ===
+export async function getExchangeRateApi() {
+    try {
+        // Usamos la API gratuita de Frankfurter
+        const response = await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD');
+        const data = await response.json();
+        return data.rates.USD; // Devuelve algo como 1.08
+    } catch (error) {
+        console.error("Error obteniendo divisas:", error);
+        return 1.1; // Valor por defecto si falla la API (Backup)
+    }
+}

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - RAWG</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/style.css">
     
     <style>
@@ -13,7 +14,7 @@
             margin-top: 20px;
             background-color: #202020;
             border-radius: 8px;
-            overflow: hidden; /* Para recortar bordes */
+            overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
@@ -24,7 +25,7 @@
         }
 
         .admin-table th {
-            background-color: #2c0e0e; /* Tono rojizo oscuro para admin */
+            background-color: #2c0e0e;
             color: #ff5252;
             font-weight: bold;
             text-transform: uppercase;
@@ -93,28 +94,30 @@
         import { getAllUsersApi, deleteUserApi } from './js/api.js';
 
         document.addEventListener("DOMContentLoaded", async () => {
-            
-            // 1. PROTECCIÓN: Si no es admin, le echamos fuera
             const role = localStorage.getItem('rawg_role');
             if (role !== 'ADMIN') {
-                alert("⛔ ACCESO DENEGADO: Esta zona es solo para administradores.");
-                window.location.href = 'index.html';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Acceso Denegado',
+                    text: 'Zona exclusiva para administradores',
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = 'index.html';
+                });
                 return;
             }
 
             const tableContainer = document.getElementById('table-container');
             const loadingMsg = document.getElementById('loading-msg');
 
-            // 2. Cargar usuarios usando la función limpia de api.js
             const users = await getAllUsersApi();
             loadingMsg.style.display = 'none';
 
             if (!users || users.length === 0) {
-                tableContainer.innerHTML = "<p>No se han encontrado usuarios (¿Error de conexión?)</p>";
+                tableContainer.innerHTML = "<p>No se han encontrado usuarios</p>";
                 return;
             }
 
-            // 3. Generar la tabla HTML
             let html = `
                 <table class="admin-table">
                     <thead>
@@ -150,17 +153,33 @@
             tableContainer.innerHTML = html;
         });
 
-        // 4. Función global para borrar (Necesaria para el onclick del HTML generado)
         window.confirmDelete = async (id, username) => {
-            if (confirm(`¿Estás seguro de que quieres eliminar al usuario ${username}? Esta acción no se puede deshacer.`)) {
-                const success = await deleteUserApi(id);
-                if (success) {
-                    alert("Usuario eliminado correctamente.");
-                    location.reload(); // Recargamos para ver la tabla actualizada
-                } else {
-                    alert("Error al eliminar el usuario.");
+            // Reemplazo del confirm nativo por SweetAlert
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: `Vas a eliminar al usuario ${username}. Esto no se puede deshacer.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const success = await deleteUserApi(id);
+                    if (success) {
+                        Swal.fire(
+                            '¡Eliminado!',
+                            'El usuario ha sido eliminado.',
+                            'success'
+                        ).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', 'No se pudo eliminar al usuario.', 'error');
+                    }
                 }
-            }
+            });
         };
     </script>
 </body>

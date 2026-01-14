@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar - RAWG App</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -42,6 +43,22 @@
 
             <div id="results-container"></div>
         </main>
+    </div>
+
+    <div id="game-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 id="modal-title">Nombre del Juego</h2>
+                <p id="modal-rating">⭐ 0/5</p>
+            </div>
+            <div class="modal-body">
+                <div id="modal-image-container">
+                    <img id="modal-img" src="" alt="Juego">
+                </div>
+                <p id="modal-desc">Detalles del juego...</p>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="js/navbar.js"></script>

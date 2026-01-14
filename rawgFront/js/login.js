@@ -1,20 +1,12 @@
 import { loginUserApi } from './api.js';
 
-const form = document.getElementById('login-form');
-const errorMsg = document.getElementById('error-msg');
-
-form.addEventListener('submit', async (e) => {
+document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // CORRECCIÓN: Ahora los IDs coinciden con el HTML
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
 
-    // Validación extra por seguridad
-    if (!usernameInput || !passwordInput) {
-        console.error("Error: No se encuentran los campos 'username' o 'password'");
-        return;
-    }
+    if (!usernameInput || !passwordInput) return;
 
     const username = usernameInput.value;
     const password = passwordInput.value;
@@ -22,8 +14,27 @@ form.addEventListener('submit', async (e) => {
     const success = await loginUserApi(username, password);
 
     if (success) {
+        // Alerta tipo "Toast" (pequeña en la esquina)
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        });
+        
+        await Toast.fire({
+            icon: 'success',
+            title: 'Sesión iniciada'
+        });
+        
         window.location.href = 'index.html'; 
     } else {
-        errorMsg.innerText = "Credenciales incorrectas o error de conexión.";
+        Swal.fire({
+            icon: 'error',
+            title: 'Acceso denegado',
+            text: 'Usuario o contraseña incorrectos',
+            confirmButtonColor: '#d32f2f'
+        });
     }
 });
