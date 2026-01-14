@@ -21,7 +21,8 @@ public class RawgController {
 
     // 1. ESTE ES EL MÉTODO QUE FALTABA (BUSCAR JUEGOS)
     @GetMapping("/games")
-    public String search(@RequestParam String search) throws IOException {
+    // CAMBIO: required = false para que funcione si no enviamos nada
+    public String search(@RequestParam(required = false) String search) throws IOException {
         return rawgApp.searchGames(search);
     }
 

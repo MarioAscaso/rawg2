@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - RAWG</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #202020;
+            border-radius: 8px;
+            overflow: hidden; /* Para recortar bordes */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        .admin-table th {
+            background-color: #2c0e0e; /* Tono rojizo oscuro para admin */
+            color: #ff5252;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .admin-table tr:hover {
+            background-color: #2a2a2a;
+        }
+
+        .role-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .role-admin { background-color: #d32f2f; color: white; }
+        .role-user { background-color: #4caf50; color: white; }
+
+        .delete-btn {
+            background-color: #d32f2f;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .delete-btn:hover { background-color: #b71c1c; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" style="font-weight:900; font-size:1.5rem; letter-spacing: 2px;">RAWG ADMIN</a>
+        <div style="flex:1"></div>
+        <span id="user-display" class="user-badge"></span>
+        <button onclick="localStorage.clear(); window.location.href='login.html';">Salir</button>
+    </nav>
+
+    <div class="app-layout">
+        
+        <aside id="sidebar-container" class="sidebar"></aside>
+
+        <main class="main-content">
+            <h1 style="text-align: left; border-bottom: 2px solid #d32f2f; padding-bottom: 10px;">
+                🛡️ Gestión de Usuarios
+            </h1>
+            <p style="color: #aaa;">
+                Control total de los usuarios registrados en la plataforma.
+            </p>
+
+            <div id="loading-msg">Cargando datos...</div>
+            
+            <div id="table-container"></div>
+        </main>
+    </div>
+
+    <script type="module" src="js/navbar.js"></script>
+    <script type="module" src="js/sidebar.js"></script>
+    
+    <script type="module">
+        import { getAllUsersApi, deleteUserApi } from './js/api.js';
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            
+            // 1. PROTECCIÓN: Si no es admin, le echamos fuera
+            const role = localStorage.getItem('rawg_role');
+            if (role !== 'ADMIN') {
+                alert("⛔ ACCESO DENEGADO: Esta zona es solo para administradores.");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const tableContainer = document.getElementById('table-container');
+            const loadingMsg = document.getElementById('loading-msg');
+
+            // 2. Cargar usuarios usando la función limpia de api.js
+            const users = await getAllUsersApi();
+            loadingMsg.style.display = 'none';
+
+            if (!users || users.length === 0) {
+                tableContainer.innerHTML = "<p>No se han encontrado usuarios (¿Error de conexión?)</p>";
+                return;
+            }
+
+            // 3. Generar la tabla HTML
+            let html = `
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(u => {
+                const roleClass = u.role === 'ADMIN' ? 'role-admin' : 'role-user';
+                const deleteAction = u.role === 'ADMIN' 
+                    ? '<span style="color:#666; font-style:italic;">Protegido</span>' 
+                    : `<button class="delete-btn" onclick="window.confirmDelete(${u.id}, '${u.username}')">Eliminar</button>`;
+
+                html += `
+                    <tr>
+                        <td>#${u.id}</td>
+                        <td><strong>${u.username}</strong></td>
+                        <td>${u.email || 'Sin email'}</td>
+                        <td><span class="role-badge ${roleClass}">${u.role}</span></td>
+                        <td>${deleteAction}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            tableContainer.innerHTML = html;
+        });
+
+        // 4. Función global para borrar (Necesaria para el onclick del HTML generado)
+        window.confirmDelete = async (id, username) => {
+            if (confirm(`¿Estás seguro de que quieres eliminar al usuario ${username}? Esta acción no se puede deshacer.`)) {
+                const success = await deleteUserApi(id);
+                if (success) {
+                    alert("Usuario eliminado correctamente.");
+                    location.reload(); // Recargamos para ver la tabla actualizada
+                } else {
+                    alert("Error al eliminar el usuario.");
+                }
+            }
+        };
+    </script>
+</body>
+</html>

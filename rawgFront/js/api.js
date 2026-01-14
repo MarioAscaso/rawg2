@@ -1,6 +1,7 @@
-const API_BASE_URL = 'http://localhost:8084'; // Ajustamos la base para tener acceso a /api y /user
+const API_BASE_URL = 'http://localhost:8084'; 
 
 // === GESTIÓN DE CREDENCIALES (Login/Logout) ===
+
 function getAuthHeaders() {
     const user = localStorage.getItem('rawg_user');
     const pass = localStorage.getItem('rawg_pass');
@@ -19,42 +20,54 @@ export function isUserLoggedIn() {
 export function logout() {
     localStorage.removeItem('rawg_user');
     localStorage.removeItem('rawg_pass');
+    localStorage.removeItem('rawg_role'); // <--- NUEVO: Borramos también el rol
     window.location.href = 'index.html';
 }
 
 // === LLAMADAS AL BACKEND ===
 
-export async function registerUserApi(username, password) {
+// 1. REGISTRO
+export async function registerUserApi(username, email, password) {
     try {
-        // POST a /user/users (según tu UserController)
         const response = await fetch(`${API_BASE_URL}/user/users`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ username, email, password })
         });
-        return response.ok;
+        
+        if (!response.ok) {
+            const text = await response.text();
+            console.error("Error del servidor:", text);
+            return false;
+        }
+        
+        return true;
     } catch (error) {
         console.error("Error en registro:", error);
         return false;
     }
 }
 
-// Simulación de Login: Guardamos credenciales y probamos si funcionan
+// 2. LOGIN (Ahora detecta ROL)
 export async function loginUserApi(username, password) {
-    // 1. Guardamos temporalmente para probar
+    // A. Guardamos temporalmente
     localStorage.setItem('rawg_user', username);
     localStorage.setItem('rawg_pass', password);
 
-    // 2. Intentamos pedir favoritos para ver si el backend nos acepta
-    // Si el backend aún no tiene seguridad, esto siempre dará true (lo cual está bien por ahora)
+    // B. Llamamos al endpoint "/me" para saber quién somos y qué ROL tenemos
     try {
-        const response = await fetch(`${API_BASE_URL}/api/favorites`, {
+        const response = await fetch(`${API_BASE_URL}/user/me`, {
             headers: { ...getAuthHeaders() }
         });
         
-        if (response.ok) return true;
+        if (response.ok) {
+            const userData = await response.json();
+            // C. IMPORTANTE: Guardamos el rol para usarlo en el sidebar y admin.html
+            localStorage.setItem('rawg_role', userData.role); 
+            return true;
+        }
         
-        // Si falla (401), borramos las credenciales porque son malas
+        // Si falla, credenciales malas
         logout(); 
         return false;
     } catch (error) {
@@ -63,10 +76,11 @@ export async function loginUserApi(username, password) {
     }
 }
 
+// 3. BUSCAR JUEGOS
 export async function searchGamesApi(query) {
     try {
         const response = await fetch(`${API_BASE_URL}/api/games?search=${query}`, {
-             headers: { ...getAuthHeaders() } // Enviamos credenciales si las hay
+             headers: { ...getAuthHeaders() } 
         });
         if (!response.ok) throw new Error('Error en la búsqueda');
         const data = await response.json();
@@ -77,13 +91,14 @@ export async function searchGamesApi(query) {
     }
 }
 
+// 4. GUARDAR FAVORITO
 export async function saveFavoriteApi(game) {
     try {
         const response = await fetch(`${API_BASE_URL}/api/favorites`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                ...getAuthHeaders() // IMPORTANTE: Autenticación
+                ...getAuthHeaders() 
             },
             body: JSON.stringify({
                 name: game.name,
@@ -92,7 +107,10 @@ export async function saveFavoriteApi(game) {
             })
         });
         
-        if (response.status === 401) alert("Debes iniciar sesión para guardar favoritos");
+        if (response.status === 401) {
+            alert("Debes iniciar sesión para guardar favoritos");
+            return false;
+        }
         
         return response.ok;
     } catch (error) {
@@ -101,6 +119,7 @@ export async function saveFavoriteApi(game) {
     }
 }
 
+// 5. OBTENER FAVORITOS
 export async function getFavoritesApi() {
     try {
         const response = await fetch(`${API_BASE_URL}/api/favorites`, {
@@ -111,5 +130,50 @@ export async function getFavoritesApi() {
     } catch (error) {
         console.error("Error obteniendo favoritos:", error);
         return [];
+    }
+}
+
+// 6. OBTENER POPULARES (HOME)
+export async function getPopularGamesApi() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/games`, {
+             headers: { ...getAuthHeaders() }
+        });
+        
+        if (!response.ok) throw new Error('Error cargando juegos populares');
+        
+        const data = await response.json();
+        return data.results || [];
+    } catch (error) {
+        console.error("Error en home:", error);
+        return [];
+    }
+}
+
+// 7. === NUEVO: FUNCIONES DE ADMIN ===
+
+export async function getAllUsersApi() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/user/admin/all`, {
+             headers: { ...getAuthHeaders() }
+        });
+        if (!response.ok) throw new Error('No autorizado');
+        return await response.json();
+    } catch (error) {
+        console.error("Error obteniendo usuarios:", error);
+        return [];
+    }
+}
+
+export async function deleteUserApi(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/user/admin/${id}`, {
+            method: 'DELETE',
+            headers: { ...getAuthHeaders() }
+        });
+        return response.ok;
+    } catch (error) {
+        console.error("Error eliminando usuario:", error);
+        return false;
     }
 }

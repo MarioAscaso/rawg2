@@ -2,24 +2,50 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar - RAWG App</title>
     <link rel="stylesheet" href="css/style.css">
-    <title>Buscador de Juegos</title>
 </head>
 <body>
+
 <nav>
-    <a href="index.html">Inicio</a> |
-    <a href="search.html">Buscar</a> | 
-    <a href="favorites.html">Mis Favoritos</a> |
-    <a href="login.html">Login</a> |
-    <a href="register.html">Registro</a>
+    <a href="index.html" style="font-weight:900; font-size:1.5rem; letter-spacing: 2px;">RAWG</a>
+    <div style="flex:1"></div>
+    
+    <a href="login.html" id="nav-login">Login</a>
+    <a href="register.html" id="nav-register">Registro</a>
+    
+    <span id="user-display" class="user-badge"></span>
+    <button id="nav-logout" onclick="localStorage.clear(); window.location.href='login.html';" style="display:none;">Salir</button>
 </nav>
 
-    <h1>Buscador de RAWG</h1>
-    <input type="text" id="search-input" placeholder="Nombre del juego...">
-    <button id="search-btn">Buscar</button>
+    <div class="app-layout">
+        
+        <aside id="sidebar-container" class="sidebar"></aside>
 
-    <div id="results-container"></div>
+        <main class="main-content">
+            
+            <div class="search-hero">
+                <h1>¿Qué quieres jugar hoy?</h1>
+                <p>Busca entre miles de juegos de todas las plataformas</p>
+                
+                <form id="search-form">
+                    <div class="search-bar-wrapper">
+                        <input type="text" id="search-input" placeholder="Ej: God of War, Mario, Zelda..." autocomplete="off">
+                        <button type="submit" id="search-btn">🔍</button>
+                    </div>
+                </form>
+            </div>
 
+            <div id="loading-spinner" class="spinner" style="display: none;"></div>
+            <div id="message"></div>
+
+            <div id="results-container"></div>
+        </main>
+    </div>
+
+    <script type="module" src="js/navbar.js"></script>
+    <script type="module" src="js/sidebar.js"></script>
     <script type="module" src="js/search.js"></script>
 </body>
 </html>

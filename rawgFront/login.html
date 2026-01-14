@@ -2,28 +2,39 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - RAWG</title>
     <link rel="stylesheet" href="css/style.css">
-    <title>Login - RAWG</title>
 </head>
 <body>
-<nav>
-    <a href="index.html">Inicio</a> |
-    <a href="search.html">Buscar</a> | 
-    <a href="favorites.html">Mis Favoritos</a> |
-    <a href="login.html">Login</a> |
-    <a href="register.html">Registro</a>
-</nav>
 
-    <h1>Iniciar Sesión</h1>
+    <nav>
+        <a href="index.html" style="font-weight:900; font-size:1.5rem; letter-spacing: 2px;">RAWG</a>
+        <div style="flex:1"></div>
+        
+        <a href="login.html" id="nav-login">Login</a>
+        <a href="register.html" id="nav-register">Registro</a>
+        
+        <span id="user-display" class="user-badge"></span>
+        <button id="nav-logout" onclick="localStorage.clear(); window.location.href='login.html';" style="display:none;">Salir</button>
+    </nav>
+
+    <h1>Bienvenido de nuevo</h1>
     
     <form id="login-form">
-        <input type="text" id="login-user" placeholder="Usuario" required>
-        <input type="password" id="login-pass" placeholder="Contraseña" required>
+        <input type="text" id="username" placeholder="Nombre de usuario" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        
         <button type="submit">Entrar</button>
+        
+        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">
+            ¿No tienes cuenta? <a href="register.html" style="color: #4caf50;">Regístrate aquí</a>
+        </p>
     </form>
     
-    <p id="error-msg" style="color: red;"></p>
+    <div id="error-msg" style="color: #d32f2f; text-align: center;"></div>
 
+    <script type="module" src="js/navbar.js"></script>
     <script type="module" src="js/login.js"></script>
 </body>
 </html>

@@ -30,7 +30,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/games").permitAll()   // Búsqueda pública
                         .anyRequest().authenticated() // Lo demás privado
                 )
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(Customizer.withDefaults()
+                );
 
         return http.build();
     }

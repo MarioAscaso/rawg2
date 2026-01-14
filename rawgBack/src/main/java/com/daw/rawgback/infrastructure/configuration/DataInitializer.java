@@ -11,17 +11,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class DataInitializer {
 
     @Bean
-    // CAMBIO AQUÍ: Usamos 'UserRepository' en lugar de 'JpaUserRepository'
     public CommandLineRunner initData(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             if (userRepository.findByUsername("admin").isEmpty()) {
                 User admin = new User();
                 admin.setUsername("admin");
+                admin.setEmail("admin@rawg.com"); // <--- AÑADIDO
                 admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setRole("ADMIN");
 
-                userRepository.save(admin); // Ahora Java sabrá qué 'save' usar
-                System.out.println("✅ Usuario ADMIN creado: admin / admin123");
+                userRepository.save(admin);
+                System.out.println("Usuario ADMIN creado: admin / admin123");
             }
         };
     }

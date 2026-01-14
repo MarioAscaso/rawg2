@@ -1,23 +1,20 @@
 import { registerUserApi } from './api.js';
 
-const form = document.getElementById('register-form');
-const message = document.getElementById('message');
-
-form.addEventListener('submit', async (e) => {
+document.getElementById('register-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    const username = document.getElementById('reg-username').value;
-    const password = document.getElementById('reg-password').value;
 
-    message.innerText = "Registrando...";
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value; // <-- NUEVO
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('error-msg');
 
-    const success = await registerUserApi(username, password);
+    // Enviamos el email a la API
+    const success = await registerUserApi(username, email, password);
 
     if (success) {
-        alert("¡Usuario creado correctamente! Ahora inicia sesión.");
+        alert('¡Cuenta creada! Ahora inicia sesión.');
         window.location.href = 'login.html';
     } else {
-        message.innerText = "Error: Puede que el usuario ya exista.";
-        message.style.color = "red";
+        errorMsg.textContent = 'Error: El usuario o el correo ya están en uso.';
     }
 });
